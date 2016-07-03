@@ -1,0 +1,43 @@
+<h3>
+	{{departure_location}} to {{arrival_location}}<br>
+	Leaving at {{time departure_time}}
+</h3>
+
+{{#each journeys}}
+<section class="journey">
+	<h4 class="journey__title">
+		<span>Option {{inc @index}}</span>
+		<span>{{duration}} Minutes</span>
+	</h4>
+	<div class="journey__card">
+		<div class="journey__overview">
+			
+			<div class="overview__times">
+				<div class="overview__times__start">{{time startDateTime}}</div>
+				<div class="overview__times__end">{{time arrivalDateTime}}</div>
+			</div>
+			<div class="overview__stops">
+				<div class="overview__stops__start"></div>
+				{{#each points}}
+				<div class="overview__stops__middle"></div>
+				{{/each}}
+				<div class="overview__stops__end"></div>
+				<span class="line"></span>
+			</div>
+			<div class="overview__locations">
+				<div class="overview__locations__start">{{departure_location}}</div>
+				<div class="overview__locations__end">{{arrival_location}}</div>
+			</div>
+
+		</div>
+		<ul class="journey__steps">
+			{{#each legs}}
+			<li>
+				<span class="step__time">{{time departureTime}} - {{time arrivalTime}}</span>
+				<p>{{instruction.summary}}</p>
+			</li>
+			{{/each}}
+		</ul>
+	</div>
+</section>
+{{/each}}

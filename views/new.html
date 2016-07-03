@@ -6,13 +6,13 @@
 	</header>
 
 	<div class="wrapper">
-		<form>
+		<form id="new-journey-form">
 
 			<div class="input-group">
 				<label for="location_from">
 					<span class="primary-label">Where are you leaving from?</span>
 					<select name="location_from" id="location_from" required>
-						{% include "partials/stations.nunjucks" %} 
+						@@include('partials/stations.html')
 					</select>
 				</label>
 			</div>
@@ -21,7 +21,7 @@
 				<label for="location_to">
 					<span class="primary-label">Where are you going to?</span>
 					<select name="location_to" id="location_from" required>
-						{% include "partials/stations.nunjucks" %} 
+						@@include('partials/stations.html')
 					</select>
 				</label>
 			</div>

@@ -57,47 +57,33 @@ gulp.task('js', function() {
   TEMPLATING
 ************* */
 
-var nunjucksRender = require('gulp-nunjucks-render');
-var data = require('gulp-data');
+var fileinclude = require('gulp-file-include');
+
+gulp.task('fileinclude', function() {
+  gulp.src(['views/*.html'])
+    .pipe(fileinclude({
+      prefix: '@@',
+      basepath: '@file'
+    }))
+    .pipe(gulp.dest('dest/'));
+});
 
 
-// Nunjucks filters
-var moment = require('moment');
-var manageEnvironment = function(environment) {
-	environment.addFilter('date', function(rawDate) {
-		rawDate = rawDate.split('-');
-		var year = rawDate[0];
-		var month = rawDate[1];
-		var day = rawDate[2];
-		var m = moment().year(year).month(month).date(day);
-		m = m.calendar(null, {
-			sameElse: 'dddd Do MMMM YYYY'
-		});
-		return m;
-	});
+var handlebars = require('gulp-handlebars');
+var wrap = require('gulp-wrap');
+var declare = require('gulp-declare');
+var concat = require('gulp-concat');
 
-	environment.addFilter('time', function(rawTime) {
-		rawTime = rawTime.split(':');
-		var hours = rawTime[0];
-		var minutes = rawTime[1];
-		var m = moment().hours(hours).minutes(minutes);
-		m = m.format('h:mma');
-		return m;
-	});
-
-	environment.addGlobal('globalTitle', 'My global title');
-};
-
-gulp.task('nunjucks', function() {
-	return gulp.src('templates/*.nunjucks')
-		.pipe(
-		nunjucksRender({
-			path: ['templates/layouts/'],
-			manageEnv: manageEnvironment
-		})
-		.on('error', gutil.log)
-		)
-		.pipe(gulp.dest('dest/'));
+gulp.task('templates', function () {
+    gulp.src('views/templates/*.hbs')
+      .pipe(handlebars())
+      .pipe(wrap('Handlebars.template(<%= contents %>)'))
+      .pipe(declare({
+          namespace: 'MyApp.templates',
+          noRedeclare: true, // Avoid duplicate declarations
+      }))
+      .pipe(concat('templates.js'))
+      .pipe(gulp.dest('dest/assets/js/'));
 });
 
 
@@ -126,7 +112,7 @@ gulp.task('connectWithBrowserSync', function() {
 gulp.task('watch', function() {
 	gulp.watch(sassFiles,['css']).on('change', browserSync.reload); 
 	gulp.watch(jsFiles,['js']).on('change', browserSync.reload);
-	gulp.watch(['**/*.nunjucks', 'events.json'], ['nunjucks']).on('change', browserSync.reload);
+	gulp.watch(['views/*.html', 'views/templates/*.hbs'], ['fileinclude', 'templates']).on('change', browserSync.reload);
 });
 
 
@@ -135,4 +121,4 @@ gulp.task('watch', function() {
 	DEFAULT
 ************* */
 
-gulp.task('default', ['connectWithBrowserSync', 'css', 'js', 'nunjucks', 'watch']);
+gulp.task('default', ['connectWithBrowserSync', 'css', 'js', 'fileinclude', 'templates', 'watch']);

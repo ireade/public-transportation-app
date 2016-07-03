@@ -7,7 +7,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     
         <link rel="stylesheet" href="assets/css/main.css">
-
     </head>
     <body>
         <header class="site-header page-header">
@@ -19,18 +18,21 @@
 
         <main class="site-main">
             <div class="wrapper">
-                {% include "journey.nunjucks" %} 
+                <div id="test"></div>
+                @@include('main.html')
             </div>
         </main>
 
-        {% include "new.nunjucks" %}
+        @@include('new.html')
 
     	<button class="fab" aria-label="Show/Hide New Journey Form">
     		<div class="bar-one"></div>
     		<div class="bar-two"></div>
     	</button>
         
+        <script src="assets/js/moment.min.js"></script>
         <script src="assets/js/handlebars.min.js"></script>
+        <script src="assets/js/templates.js"></script>
         <script src="assets/js/main.js"></script>
     </body>
 </html>
