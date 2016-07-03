@@ -1,0 +1,55 @@
+
+<div id="journeys"></div>
+
+<h3>
+	Paddington to Oxford Circus<br>
+	Leaving at 12:01
+</h3>
+
+<section class="journey">
+	<h4 class="journey__title">
+		<span>Option 1</span>
+		<span>12 Minutes</span>
+	</h4>
+	<div class="journey__card">
+		<div class="journey__overview">
+			
+			<div class="overview__times">
+				<div class="overview__times__start">12:01</div>
+				<div class="overview__times__end">12:13</div>
+			</div>
+			<div class="overview__stops">
+				<div class="overview__stops__start"></div>
+				<div class="overview__stops__middle"></div>
+				<div class="overview__stops__middle"></div>
+				<div class="overview__stops__end"></div>
+				<span class="line"></span>
+			</div>
+			<div class="overview__locations">
+				<div class="overview__locations__start">London Paddington</div>
+				<div class="overview__locations__end">Oxford Circus</div>
+			</div>
+
+		</div>
+		<ul class="journey__steps">
+			<li>
+				<span class="step__time">12:01 - 12:03</span>
+				<p>Take the Bakerloo Line from London Paddington Underground Station to Baker Street Underground Station</p>
+			</li>
+			<li>
+				<span class="step__time">12:01 - 12:03</span>
+				<p>Take the Bakerloo Line from London Paddington Underground Station to Baker Street Underground Station</p>
+			</li>
+		</ul>
+	</div>
+</section>
+
+
+</div>
+
+<script id="journeys-template" type="text/x-handlebars-template">
+	{{title}} Hello world
+</script>
+
+
+

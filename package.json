@@ -1,0 +1,25 @@
+{
+  "name": "tube-planr",
+  "version": "1.0.0",
+  "description": "Public Transportation Planner for Udacity Senior Web Developer Nanodegree",
+  "main": "gulpfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "autoprefixer": "^6.3.3",
+    "browser-sync": "^2.12.8",
+    "gulp": "^3.9.1",
+    "gulp-data": "^1.2.1",
+    "gulp-nunjucks-render": "^2.0.0",
+    "gulp-postcss": "^6.1.0",
+    "gulp-sass": "^2.2.0",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "moment": "^2.13.0",
+    "postcss-scss": "^0.1.5"
+  },
+  "scripts": {
+    "start": "gulp"
+  },
+  "author": "Ire Aderinokun",
+  "license": "ISC"
+}

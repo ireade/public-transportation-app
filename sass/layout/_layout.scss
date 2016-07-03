@@ -1,0 +1,103 @@
+
+
+.wrapper {
+	position: relative;
+	margin: 0 auto;
+	width: 90%;
+	max-width: 500px;
+}
+
+.page-header {
+	background: $secondary-clr;
+	padding: 10px 0;
+	box-shadow: $box-shadow;
+	margin-bottom: 30px;
+}
+
+.fab {
+	position: fixed;
+	bottom: 25px;
+	right: 25px;
+
+	height: 50px;
+	width: 50px;
+	background: $dark-grey;
+
+	border: 0;
+	border-radius: 50%;
+	box-shadow: $box-shadow;
+	color: #fff;
+
+	cursor: pointer;
+
+	z-index: 200;
+
+
+	.bar-one,
+	.bar-two {
+		height: 25px;
+		width: 5px;
+		background: #fff;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		border-radius: 20px;
+		transition: transform 0.5s;
+	}
+
+	.bar-one {
+		transform: translate(-50%,-50%);
+	}
+	.bar-two {
+		transform: translate(-50%,-50%) rotate(90deg);
+	}
+}
+
+.fab.modalOpen {
+	.bar-one {
+		transform: translate(-50%,-50%) rotate(135deg);
+	}
+	.bar-two {
+		transform: translate(-50%,-50%) rotate(225deg);
+	}
+
+}
+
+
+
+
+
+
+
+
+
+/* */
+
+.new-journey {
+	position: fixed;
+	top: 100%;
+	width: 100%;
+	height: 100%;
+	transition: top 0.5s;
+	background: $bg-clr;
+
+	z-index: 100;
+}
+
+.new-journey.modalOpen {
+	top: 0;
+	transition: top 0.5s;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

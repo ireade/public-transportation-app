@@ -1,0 +1,60 @@
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 1.6rem;
+    font-weight: 300;
+    line-height: 1.6;
+    font-family: $font;
+    background-color: $bg-clr;
+}
+
+
+h3 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+}
+
+a {
+    text-decoration: underline;
+    color: inherit; 
+}
+
+em {
+    font-weight: 700;
+}
+
+small {
+    font-size: 1.4rem;
+}
+
+
+
+
+
+.site-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.page-title {
+    font-size: 2.4rem;
+    font-weight: 300;
+
+}
+
+
+.primary-label {
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+
+
+.sr-only {
+    opacity: 0;
+    position: absolute;
+    clip: rect(1px 1px 1px 1px); /* syntax for IE6 & IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+}

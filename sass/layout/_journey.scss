@@ -1,0 +1,133 @@
+
+
+
+.journey {
+	margin-bottom: 20px;
+}
+
+
+
+.journey__title {
+	font-size: 1.4rem;
+	font-style: italic;
+	margin-bottom: 10px;
+	display: flex;
+
+	span {
+		width: 50%;
+	}
+
+	span:last-child {
+		text-align: right;
+	}
+}
+
+
+.journey__card {
+	box-shadow: $box-shadow;
+	border-radius: 5px;
+	background-color: #fff;
+
+	
+
+	.journey__steps {
+		display: flex;
+		flex-wrap: wrap;
+
+		.step__time {
+			font-weight: 700;
+		}
+
+		li {
+			width: 100%;
+			padding: 10px;
+		}
+		li:not(:last-child) {
+			border-bottom: 2px solid $primary-clr;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+.journey__overview {
+	background: $primary-clr;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	padding: 30px 20px;
+	font-size: 1.4rem;
+	font-weight: 700;
+}
+
+.overview__times {
+	display: flex;
+
+	.overview__times__start,
+	.overview__times__end {
+		width: 50%;
+	}
+
+	.overview__times__end {
+		text-align: right;
+	}
+}
+
+.overview__stops {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 10px 0;
+	position: relative;
+
+	div {
+		background: #fff;
+		border: 2px solid $primary-accent-clr;
+		height: 20px;
+		width: 20px;
+		border-radius: 50%;
+		z-index: 2;
+	}
+
+	.overview__stops__start,
+	.overview__stops__end {
+		height: 30px;
+		width: 30px;
+	}
+
+	.line {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 95%;
+		background: #fff;
+		height: 3px;
+		transform: translate(-50%, -50%);
+		z-index: 1;
+	}
+}
+
+.overview__locations {
+	display: flex;
+
+	.overview__locations__start,
+	.overview__locations__end {
+		width: 50%;
+	}
+
+	.overview__locations__end {
+		text-align: right;
+	}
+}
+
+
+
+
+

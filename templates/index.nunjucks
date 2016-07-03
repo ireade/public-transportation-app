@@ -1,0 +1,36 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>The Tube Planr</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <link rel="stylesheet" href="assets/css/main.css">
+
+    </head>
+    <body>
+        <header class="site-header page-header">
+            <div class="wrapper">
+                <h1 class="site-title">The TubePlanr</h1>
+                <h2 class="page-title">Your Journey</h2>
+            </div>
+        </header>
+
+        <main class="site-main">
+            <div class="wrapper">
+                {% include "journey.nunjucks" %} 
+            </div>
+        </main>
+
+        {% include "new.nunjucks" %}
+
+    	<button class="fab" aria-label="Show/Hide New Journey Form">
+    		<div class="bar-one"></div>
+    		<div class="bar-two"></div>
+    	</button>
+        
+        <script src="assets/js/handlebars.min.js"></script>
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>

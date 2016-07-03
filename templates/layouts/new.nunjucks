@@ -1,0 +1,33 @@
+<section class="new-journey">
+	<header class="page-header">
+		<div class="wrapper">
+			<h2 class="page-title">New Journey</h2>
+		</div>
+	</header>
+
+	<div class="wrapper">
+		<form>
+
+			<div class="input-group">
+				<label for="location_from">
+					<span class="primary-label">Where are you leaving from?</span>
+					<select name="location_from" id="location_from" required>
+						{% include "partials/stations.nunjucks" %} 
+					</select>
+				</label>
+			</div>
+
+			<div class="input-group">
+				<label for="location_to">
+					<span class="primary-label">Where are you going to?</span>
+					<select name="location_to" id="location_from" required>
+						{% include "partials/stations.nunjucks" %} 
+					</select>
+				</label>
+			</div>
+
+			<button type="submit">Plan My Journey</button>
+			
+		</form>
+	</div>
+</section>
