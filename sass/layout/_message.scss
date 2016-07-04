@@ -1,0 +1,51 @@
+
+
+.display-message {
+	position: fixed;
+	bottom: 25px;
+	width: calc(100% - 130px);	
+	background: #fff;
+	box-shadow: $box-shadow;
+	padding: 10px 15px;
+
+	z-index: 100;
+
+	p {
+		display: block;
+		margin-bottom: 15px;
+	}
+
+	
+}
+
+.display-message.success {
+	border-left: 5px solid green;
+}
+.display-message.danger {
+	border-left: 5px solid red;
+}
+
+
+.actions {
+	display: flex;
+	justify-content: flex-start;
+
+	button {
+		width: 200px;
+		display: inline-block;
+		margin-right: 15px;
+
+		background: $secondary-clr;
+		border-color: $secondary-clr;
+	}
+}
+
+.display-message:not(.open) {
+	left: -100%;
+	transition: left 1s;
+}
+
+.display-message.open {
+	left: 25px;
+	transition: left 1s;
+}

@@ -1,11 +1,9 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <title>The Tube Planr</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="assets/css/main.css">
     </head>
     <body>
@@ -16,14 +14,18 @@
             </div>
         </header>
 
-        <main class="site-main">
-            <div class="wrapper">
-                <div id="test"></div>
-                @@include('main.html')
-            </div>
-        </main>
+        @@include('main.html')
 
         @@include('new.html')
+
+        <div class="display-message">
+            <p class="dm__message">Lorem ipsum dolor sit amet</p>
+
+            <div class="actions">
+                <button type="button" class="dm__action">Action</button>
+                <button type="button" class="dm__dismiss">Dismiss</button>
+            </div>
+        </div>
 
     	<button class="fab" aria-label="Show/Hide New Journey Form">
     		<div class="bar-one"></div>
@@ -32,6 +34,7 @@
         
         <script src="assets/js/moment.min.js"></script>
         <script src="assets/js/handlebars.min.js"></script>
+        <script src="assets/js/handlebars-helpers.js"></script>
         <script src="assets/js/templates.js"></script>
         <script src="assets/js/main.js"></script>
     </body>

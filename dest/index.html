@@ -1,11 +1,9 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <title>The Tube Planr</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="assets/css/main.css">
     </head>
     <body>
@@ -17,11 +15,11 @@
         </header>
 
         <main class="site-main">
-            <div class="wrapper">
-                <div id="test"></div>
-                <div id="journeys"></div>
-            </div>
-        </main>
+    <div id="journeys" class="wrapper">
+    	<!-- Journey Information will be added from templates/journeys.hbs-->
+    </div>
+</main>
+
 
         <section class="new-journey">
 	<header class="page-header">
@@ -47,7 +45,7 @@
 			<div class="input-group">
 				<label for="location_to">
 					<span class="primary-label">Where are you going to?</span>
-					<select name="location_to" id="location_from" required>
+					<select name="location_to" id="location_to" required>
 						<option value="51.5151846554,-0.17553880792">Paddington</option>
 <option value="51.52989409,-0.185888819">Maida Vale</option>
 <option value="51.5135970,-0.15869195">Marble Arch</option>
@@ -56,10 +54,18 @@
 			</div>
 
 			<button type="submit">Plan My Journey</button>
-			
 		</form>
 	</div>
 </section>
+
+        <div class="display-message">
+            <p class="dm__message">Lorem ipsum dolor sit amet</p>
+
+            <div class="actions">
+                <button type="button" class="dm__action">Action</button>
+                <button type="button" class="dm__dismiss">Dismiss</button>
+            </div>
+        </div>
 
     	<button class="fab" aria-label="Show/Hide New Journey Form">
     		<div class="bar-one"></div>
@@ -68,6 +74,7 @@
         
         <script src="assets/js/moment.min.js"></script>
         <script src="assets/js/handlebars.min.js"></script>
+        <script src="assets/js/handlebars-helpers.js"></script>
         <script src="assets/js/templates.js"></script>
         <script src="assets/js/main.js"></script>
     </body>
