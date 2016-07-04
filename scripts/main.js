@@ -24,6 +24,9 @@ fab.addEventListener('click', function() {
 	
 ---------------------------- */
 
+
+/* DISPLAY MESSAGE ------------------- */
+
 function DisplayMessage(type, message) {
 
 	this.displayMessageEl = document.getElementsByClassName('display-message')[0];
@@ -53,13 +56,11 @@ DisplayMessage.prototype.setupAction = function(buttonText, buttonFunction) {
 	if ( !buttonText | !buttonFunction ) {
 		this.actionBTN.style.display = 'none';
 	}
-
 	this.actionBTN.innerHTML = buttonText;
 	this.actionBTN.addEventListener('click', buttonFunction);
 };
 
 DisplayMessage.prototype._init = function(type, message) {
-
 	this._reset();
 
 	this.displayMessageEl.classList.add(type);
@@ -71,15 +72,28 @@ DisplayMessage.prototype._init = function(type, message) {
 	this.dismissBTN.addEventListener('click', function() {
 		prototype._close();
 	});
-
 };
 
-// var foo = new DisplayMessage('success', 'stuff');
 
-// foo.setupAction('consoe', function() {
-// 	console.log("hello");
-// });
+/* LOADER ------------------- */
 
+function Loader(element) {
+	this._target = element;
+
+	this._loader = document.createElement('div');
+	this._loader.classList.add('spinner');
+	this._loader.innerHTML = '<div class="double-bounce1"></div>\
+							  <div class="double-bounce2"></div>';
+
+	this._init();
+}
+Loader.prototype._init = function() {
+	this._target.innerHTML = '';
+	this._target.appendChild(this._loader);
+};
+Loader.prototype.remove = function() {
+	this._target.removeChild(this._loader);
+};
 
 
 /* ----------------------------
@@ -102,13 +116,13 @@ var app_key = '40c230d6c65288e70be34a738dcc6b91';
 
 function Journey(fromCoordinates, toCoordinates, fromName, toName) {
 
-	this._fromCoordinates = fromCoordinates || '51.5151846554,-0.17553880792';
-	this._toCoordinates = toCoordinates || '51.52989409,-0.185888819';
+	this._fromCoordinates = fromCoordinates;
+	this._toCoordinates = toCoordinates;
 
 	this._fromName = fromName ? '&fromName='+fromName : '';
 	this._toName = toName ? '&toName='+toName : '';
 
-	this._url = 'https://api.tfl.gov.uk/Journey/JourneyResults/'+this._fromCoordinates+'/to/'+this._toCoordinates+'?nationalSearch=False&timeIs=Departing&journeyPreference=LeastTime&mode=tube&walkingSpeed=Average&cyclePreference=None&alternativeCycle=False&alternativeWalking=False&applyHtmlMarkup=False&useMultiModalCall=False&walkingOptimization=False'+this._fromName+this._toName+'&app_id='+app_id+'&app_key='+app_key;
+	this._url = 'https://api.tfl.gov.uk/Journey/JourneyResults/'+this._fromCoordinates+'/to/'+this._toCoordinates+'?nationalSearch=True&timeIs=Departing&journeyPreference=LeastTime&mode=tube&walkingSpeed=Average&cyclePreference=None&alternativeCycle=False&alternativeWalking=False&applyHtmlMarkup=False&useMultiModalCall=False&walkingOptimization=False'+this._fromName+this._toName+'&app_id='+app_id+'&app_key='+app_key;
 
 	this._init();
 
@@ -165,12 +179,13 @@ Journey.prototype._init = function() {
 
 	var prototype = this;
 
+	new Loader( document.getElementById('journeys') );
+
 	this._fetchData()
 	.then(function(result) {
 		return prototype._setupData(result);
 	})
 	.then(function(data) {
-
 		var html = MyApp.templates.journeys(data);
 		document.getElementById('journeys').innerHTML = html;
 	})
@@ -191,7 +206,36 @@ Journey.prototype._init = function() {
 	
 ---------------------------- */
 
-new Journey();
+
+var defaultJourney = new Journey('51.5151846554,-0.17553880792', '51.52989409,-0.185888819');
+
+
+
+fetch('/assets/data/stations.json')
+.then(function(response) {
+	return response.json();
+})
+.then(function(json) {
+	var data = { stations: json };
+	var html = MyApp.templates.stations(data);
+	document.getElementById('location_from').innerHTML = html;
+	document.getElementById('location_to').innerHTML = html;
+
+	return Promise.resolve();
+	
+})
+.then(function() {
+
+	var options = {
+		sortField: {
+			field: 'text',
+			direction: 'asc'
+		}
+	};
+
+	$('#location_from').selectize(options);
+	$('#location_to').selectize(options);
+});
 
 
 
@@ -210,18 +254,20 @@ newJourneyForm.addEventListener('submit', function(e) {
 
 	e.preventDefault();
 
-	var location_from = document.getElementById('location_from').value;
-	var location_to = document.getElementById('location_to').value;
+	var location_from_coordinates = document.getElementById('location_from').value;
+	var location_to_coordinates = document.getElementById('location_to').value;
+	var location_from_name = document.querySelector('#location_from option[selected="selected"]').innerHTML;
+	var location_to_name = document.querySelector('#location_to option[selected="selected"]').innerHTML;
 
-	var journey = new Journey(location_from, location_to);
+	new Journey(location_from_coordinates, location_to_coordinates, location_from_name, location_to_name);
 
 	toggleModal();
-
 
 });
 
 
 
+/* */
 
 
 
