@@ -1,10 +1,9 @@
 var appPrefix = 'tplanr-';
-var currentCacheName = appPrefix+'static-v2';
+var currentCacheName = appPrefix+'testing-v3';
 
 /* ------------------------------
 
     Install SW
-      - Called only the first time the SW is installed
 
 ------------------------------ */
 
@@ -17,6 +16,7 @@ self.addEventListener('install', function(event) {
 		'/assets/js/lib/jquery.min.js',
 		'/assets/js/lib/moment.min.js',
 		'/assets/js/lib/handlebars.min.js',
+		'/assets/js/lib/selectize.min.js',
 		'/assets/js/lib/idb.min.js',
 
 		'/assets/js/main.js',
@@ -70,7 +70,7 @@ self.addEventListener('activate', function(event) {
 
 /* ------------------------------
 
-    Fetch
+    Fetch Events
 
 ------------------------------ */
 

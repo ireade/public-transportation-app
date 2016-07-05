@@ -100,7 +100,7 @@ function IndexController() {
 
 	this._dbPromise = this._setupDB();
 	this._registerServiceWorker();
-	this._showDefaultJourney();
+	this.showDefaultJourney();
 }
 
 
@@ -158,7 +158,7 @@ IndexController.prototype._handleEmptyState = function() {
 	toggleModal();
 };
 
-IndexController.prototype._showDefaultJourney = function() {
+IndexController.prototype.showDefaultJourney = function() {
 
 	var prototype = this;
 
@@ -292,8 +292,7 @@ Journey.prototype._fetchData = function() {
 	return fetch(this._fetchUrl).then(function(response) {
 		return response.json();
 	}).catch(function(err) {
-		console.log(err);
-		new DisplayMessage('danger', 'Fetch error').setupAction(false);
+		console.log("fetch caught in _fetchdata", err);
 		return Promise.reject(err);
 	});
 };
@@ -360,13 +359,13 @@ Journey.prototype._init = function() {
 		this._fetchData()
 		.then(prototype._setupData)
 		.then(prototype._displayJourney)
-		.catch(function(err) {
-			console.log("caught!", err);
-			new DisplayMessage('danger', 'Looks like there was an error getting your journey. Please try a different route').setupAction(false);
-			return Promise.reject();
-		})
 		.then(function(data) {
 			return prototype._addToDB(data, prototype);
+		})
+		.catch(function(err) {
+			console.log("caught error from Journey.prototype._init", err);
+			new DisplayMessage('danger', 'Oops! Looks like we were unable to get your new route. Here is your last searched journey instead').setupAction(false);
+			Controller.showDefaultJourney();
 		});
 
 	}
@@ -427,10 +426,13 @@ newJourneyForm.addEventListener('submit', function(e) {
 
 	e.preventDefault();
 
-	var location_from_coordinates = document.getElementById('location_from').value;
-	var location_to_coordinates = document.getElementById('location_to').value;
-	var location_from_name = document.querySelector('#location_from option[selected="selected"]').innerHTML;
-	var location_to_name = document.querySelector('#location_to option[selected="selected"]').innerHTML;
+	var location_from = document.getElementById('location_from');
+	var location_to = document.getElementById('location_to');
+
+	var location_from_coordinates = location_from.value;
+	var location_to_coordinates = location_to.value;
+	var location_from_name = location_from.options[location_from.selectedIndex].text;
+	var location_to_name = location_to.options[location_to.selectedIndex].text;
 
 
 	if ( !location_from_coordinates | !location_to_coordinates ) {
