@@ -44,10 +44,17 @@ gulp.task('css', function() {
 var uglify = require('gulp-uglify');
 var jsFiles = 'scripts/**/*.js';
 
+var jsMainFiles = 'scripts/main/*.js';
+var jsSWFile = 'scripts/sw/service-worker.js';
+
+
 gulp.task('js', function() {
-	gulp.src(jsFiles)
+	gulp.src(jsMainFiles)
 		.pipe(uglify())
 		.pipe(gulp.dest('dest/assets/js'));
+	gulp.src(jsSWFile)
+		.pipe(uglify())
+		.pipe(gulp.dest('dest/'));
 });
 
 
@@ -60,7 +67,7 @@ gulp.task('js', function() {
 var fileinclude = require('gulp-file-include');
 
 gulp.task('fileinclude', function() {
-  gulp.src(['views/*.html'])
+  gulp.src(['views/index.html'])
     .pipe(fileinclude({
       prefix: '@@',
       basepath: '@file'
