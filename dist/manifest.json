@@ -1,0 +1,11 @@
+{
+  "name": "The TubePlanr",
+  "scope": "/",
+  "icons": [{
+    "src": "/assets/img/icon.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }],
+  "display": "standalone",
+  "start_url": "/"
+}
