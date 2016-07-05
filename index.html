@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>The Tube Planr</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="assets/css/main.css">
+    </head>
+    <body>
+        <header class="site-header page-header">
+            <div class="wrapper">
+                <h1 class="site-title">The TubePlanr</h1>
+                <h2 class="page-title">Your Journey</h2>
+            </div>
+        </header>
+
+        <main class="site-main">
+    <div id="journeys" class="wrapper">
+    	<!-- Journey Information will be added from templates/journeys.hbs-->
+    </div>
+</main>
+
+
+        <section class="new-journey">
+	<header class="page-header">
+		<div class="wrapper">
+			<h2 class="page-title">New Journey</h2>
+		</div>
+	</header>
+
+	<div class="wrapper">
+		<form id="new-journey-form" novalidate>
+
+			<div class="input-group">
+				<label for="location_from">
+					<span class="primary-label">Where are you leaving from?</span>
+					<select name="location_from" id="location_from" required>
+					</select>
+				</label>
+			</div>
+
+			<div class="input-group">
+				<label for="location_to">
+					<span class="primary-label">Where are you going to?</span>
+					<select name="location_to" id="location_to" required>
+					</select>
+				</label>
+			</div>
+
+			<button type="submit">Plan My Journey</button>
+		</form>
+	</div>
+</section>
+
+        <div class="display-message">
+            <p class="dm__message">Lorem ipsum dolor sit amet</p>
+            <div class="actions">
+                <button type="button" class="dm__action">Action</button>
+                <button type="button" class="dm__dismiss">Dismiss</button>
+            </div>
+        </div>
+
+    	<button class="fab" aria-label="Show/Hide New Journey Form">
+    		<div class="bar-one"></div>
+    		<div class="bar-two"></div>
+    	</button>
+        
+        <script src="assets/js/lib/jquery.min.js"></script>
+        <script src="assets/js/lib/moment.min.js"></script>
+        <script src="assets/js/lib/handlebars.min.js"></script>
+        <script src="assets/js/lib/selectize.min.js"></script>
+        <script src="assets/js/lib/idb.min.js"></script>
+
+        <script src="assets/js/handlebars-helpers.js"></script>
+        <script src="assets/js/templates.js"></script>
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>
