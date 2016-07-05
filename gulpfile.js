@@ -33,7 +33,7 @@ gulp.task('css', function() {
 			sass({ outputStyle: 'compressed' })
 			.on('error', gutil.log)
 		)
-		.pipe(gulp.dest('dest/assets/css'));
+		.pipe(gulp.dist('dist/assets/css'));
 });
 
 
@@ -51,10 +51,10 @@ var jsSWFile = 'scripts/sw/service-worker.js';
 gulp.task('js', function() {
 	gulp.src(jsMainFiles)
 		.pipe(uglify())
-		.pipe(gulp.dest('dest/assets/js'));
+		.pipe(gulp.dist('dist/assets/js'));
 	gulp.src(jsSWFile)
 		.pipe(uglify())
-		.pipe(gulp.dest('dest/'));
+		.pipe(gulp.dist('dist/'));
 });
 
 
@@ -72,7 +72,7 @@ gulp.task('fileinclude', function() {
       prefix: '@@',
       basepath: '@file'
     }))
-    .pipe(gulp.dest('dest/'));
+    .pipe(gulp.dist('dist/'));
 });
 
 
@@ -90,7 +90,7 @@ gulp.task('templates', function () {
           noRedeclare: true, // Avoid duplicate declarations
       }))
       .pipe(concat('templates.js'))
-      .pipe(gulp.dest('dest/assets/js/'));
+      .pipe(gulp.dist('dist/assets/js/'));
 });
 
 
@@ -104,7 +104,7 @@ var browserSync = require('browser-sync');
 gulp.task('connectWithBrowserSync', function() {
 	browserSync.create();
 	browserSync.init({
-		server: './dest'
+		server: './dist'
 	});
 });
 
