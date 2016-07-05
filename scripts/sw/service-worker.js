@@ -9,29 +9,23 @@ var currentCacheName = appPrefix+'static-v1';
 ------------------------------ */
 
 self.addEventListener('install', function(event) {
-  
-	// var filesToCache = [
-	// 	'/',
-	// 	'/index.html',
-
-	// 	'/assets/js/jquery.min.js',
-	// 	'/assets/js/moment.min.js',
-	// 	'/assets/js/handlebars.min.js',
-	// 	'/assets/js/selectize.min.js',
-
-	// 	'/assets/js/main.js',
-	// 	'/assets/js/handlebars-helpers.js',
-	// 	'/assets/js/templates.js',
-
-	// 	'/assets/data/stations.json',
-
-	// 	'/assets/css/main.css'
-	// ];
-
+ 
 	var filesToCache = [
-		'/assets/js/jquery.min.js',
-		'/assets/js/moment.min.js',
-		'/assets/js/handlebars.min.js'
+		'/',
+		'/index.html',
+
+		'/assets/js/lib/jquery.min.js',
+		'/assets/js/lib/moment.min.js',
+		'/assets/js/lib/handlebars.min.js',
+		'/assets/js/lib/idb.min.js',
+
+		'/assets/js/main.js',
+		'/assets/js/handlebars-helpers.js',
+		'/assets/js/templates.js',
+
+		'/assets/data/stations.json',
+
+		'/assets/css/main.css'
 	];
 
 	event.waitUntil(
@@ -80,15 +74,15 @@ self.addEventListener('activate', function(event) {
 
 ------------------------------ */
 
-// self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function(event) {
 
-// 	event.respondWith(
-// 		caches.match(event.request).then(function(response) {
-// 			return response || fetch(event.request);
-// 		})
-// 	);
+	event.respondWith(
+		caches.match(event.request).then(function(response) {
+			return response || fetch(event.request);
+		})
+	);
 
-// });
+});
 
 
 
@@ -101,17 +95,12 @@ self.addEventListener('activate', function(event) {
 ------------------------------ */
 
 self.addEventListener('message', function(event) {
-
 	if (!event.data.action) { return; }
 
 	switch(event.data.action) {
-
 		case 'skipWaiting':
 			self.skipWaiting();
-
 		default:
 			return;
-
-	}
-
+	} // end switch
 });

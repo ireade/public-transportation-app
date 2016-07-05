@@ -127,7 +127,7 @@ IndexController.prototype._registerServiceWorker = function() {
 			// console.log('Service Worker Registered', reg);
 
 			if (reg.waiting) {
-				console.log('reg waiting still');
+				console.log('reg waiting');
 
 				new DisplayMessage('success', "There's a new verion of TubePlanr available! Click refresh to update")
 				.setupAction('Refresh', function() {
@@ -149,7 +149,7 @@ IndexController.prototype._registerServiceWorker = function() {
 		});
 
 
-	}
+	} // end if serviceWorker
 };
 
 
@@ -172,9 +172,27 @@ IndexController.prototype._showDefaultJourney = function() {
 
 		if ( response.length == 0 ) {
 			prototype._handleEmptyState();
+			return Promise.reject();
 		} else {
 			new Journey(null, response[0]);
+			return Promise.resolve(response[0]);
 		}
+		
+
+	}).then(function(lastJourney) {
+
+		var lastJourneyDeparturePoint = lastJourney.journeys[0].legs[0].departurePoint;
+		var lastJourneyArrivalPoint = lastJourney.journeys[0].legs[ lastJourney.journeys[0].legs.length - 1 ].arrivalPoint;
+
+		var fetchInformation = {
+			fromCoordinates: lastJourneyDeparturePoint.lat +','+ lastJourneyDeparturePoint.lon,
+			toCoordinates: lastJourneyArrivalPoint.lat +','+ lastJourneyArrivalPoint.lon,
+			fromName: lastJourney.departure_location,
+			toName: lastJourney.arrival_location
+		};
+
+		// IRE!! NEED TO UNCOMMENT
+		//new Journey(fetchInformation, null, true);
 
 	});
 };
@@ -205,9 +223,11 @@ var app_key = '40c230d6c65288e70be34a738dcc6b91';
 ---------------------------- */
 
 
-function Journey(newJourney, savedJourney) {
+function Journey(newJourney, savedJourney, hideLoader) {
 
 	this._savedJourney = false;
+
+	this._hideLoader = hideLoader;
 
 	if ( savedJourney ) {
 
@@ -333,7 +353,9 @@ Journey.prototype._init = function() {
 
 	} else {
 
-		new Loader( document.getElementById('journeys') );
+		if ( !this._hideLoader ) {
+			new Loader( document.getElementById('journeys') );
+		}
 
 		this._fetchData()
 		.then(prototype._setupData)
@@ -395,13 +417,11 @@ fetch('/assets/data/stations.json')
 
 /* ----------------------------
 
-	
+	NEW JOURNEY FORM
 	
 ---------------------------- */
 
-
 var newJourneyForm = document.getElementById('new-journey-form');
-
 
 newJourneyForm.addEventListener('submit', function(e) {
 
@@ -413,6 +433,11 @@ newJourneyForm.addEventListener('submit', function(e) {
 	var location_to_name = document.querySelector('#location_to option[selected="selected"]').innerHTML;
 
 
+	if ( !location_from_coordinates | !location_to_coordinates ) {
+		new DisplayMessage('danger', 'You need to select both a departure and arrival station').setupAction(false);
+		return;
+	}
+
 	var fetchInformation = {
 		fromCoordinates: location_from_coordinates,
 		toCoordinates: location_to_coordinates,
@@ -420,40 +445,11 @@ newJourneyForm.addEventListener('submit', function(e) {
 		toName: location_to_name
 	};
 
-
 	new Journey(fetchInformation);
 
 	toggleModal();
 
-
 });
-
-
-
-/* */
-
-
-/* ----------------------------
-
-	Default
-	
----------------------------- */
-
-
-
-
-
-
-/* ----------------------------
-
-	ServiceWorker
-	
----------------------------- */
-
-
-
-
-
 
 
 

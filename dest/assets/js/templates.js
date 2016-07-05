@@ -35,13 +35,13 @@ this["MyApp"]["templates"]["journeys"] = Handlebars.template({"1":function(depth
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<h3>\n	"
+  return "<h3>\n	Your Journey from <mark>"
     + alias3(((helper = (helper = helpers.departure_location || (depth0 != null ? depth0.departure_location : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"departure_location","hash":{},"data":data}) : helper)))
-    + " to "
+    + "</mark> to <mark>"
     + alias3(((helper = (helper = helpers.arrival_location || (depth0 != null ? depth0.arrival_location : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"arrival_location","hash":{},"data":data}) : helper)))
-    + "<br>\n	Leaving at "
-    + alias3((helpers.time || (depth0 && depth0.time) || alias1).call(depth0,(depth0 != null ? depth0.departure_time : depth0),{"name":"time","hash":{},"data":data}))
-    + "\n</h3>\n\n"
+    + "</mark><br>\n	Leaving <mark>"
+    + alias3((helpers.datetime || (depth0 && depth0.datetime) || alias1).call(depth0,(depth0 != null ? depth0.departure_time : depth0),{"name":"datetime","hash":{},"data":data}))
+    + "</mark>\n</h3>\n\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.journeys : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 this["MyApp"]["templates"]["stations"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
