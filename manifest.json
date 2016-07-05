@@ -1,5 +1,7 @@
 {
-  "name": "The TubePlanr",
+  "name": "The Tube Planr",
+  "short_name": "TubePlanr",
+  "description": "Plan your London Underground Trip",
   "scope": "/",
   "icons": [{
     "src": "/assets/img/icon.png",
@@ -7,5 +9,6 @@
     "type": "image/png"
   }],
   "display": "standalone",
-  "start_url": "/"
+  "start_url": "/",
+  "lang": "en-US"
 }
