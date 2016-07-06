@@ -394,9 +394,6 @@ Journey.prototype._init = function() {
 		this._fetchData()
 		.then(prototype._setupData)
 		.then(prototype._displayJourney)
-		.then(function(data) {
-			return prototype._addToDB(data, prototype);
-		})
 		.catch(function(err) {
 
 			if ( !this._shouldHideLoader ) {
@@ -404,6 +401,9 @@ Journey.prototype._init = function() {
 				Controller.showDefaultJourney();
 			}
 			
+		})
+		.then(function(data) {
+			return prototype._addToDB(data, prototype);
 		});
 
 	}
@@ -485,7 +485,6 @@ FormController.prototype._validateGeolocation = function(position) {
 	var boundary_top_left = [51.703462, -0.461611]; var boundary_top_right = [51.706866, 0.274473];   
 
 	var boundary_bottom_left = [51.397752, -0.419039]; var boundary_bottom_right = [51.383184, 0.156370];
-
 
 
 	var lat_is_within = ( lat < boundary_top_left[0] && lat > boundary_bottom_left[0]) &&
