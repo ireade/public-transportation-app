@@ -398,8 +398,12 @@ Journey.prototype._init = function() {
 			return prototype._addToDB(data, prototype);
 		})
 		.catch(function(err) {
-			new DisplayMessage('danger', 'Oops! Looks like we were unable to get your new route. Here is your last searched journey instead').setupAction(false);
-			Controller.showDefaultJourney();
+
+			if ( !this._shouldHideLoader ) {
+				new DisplayMessage('danger', 'Oops! Looks like we were unable to get your new route. Here is your last searched journey instead').setupAction(false);
+				Controller.showDefaultJourney();
+			}
+			
 		});
 
 	}
