@@ -3,11 +3,23 @@
   "short_name": "TubePlanr",
   "description": "Plan your London Underground Trip",
   "scope": "/",
-  "icons": [{
-    "src": "/assets/img/icon.png",
-    "sizes": "144x144",
-    "type": "image/png"
-  }],
+  "icons": [
+    {
+      "src": "/assets/img/icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icon.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icon-192.png",
+      "sizes": "192x19",
+      "type": "image/png"
+    }
+  ],
   "display": "standalone",
   "start_url": "/",
   "lang": "en-US"

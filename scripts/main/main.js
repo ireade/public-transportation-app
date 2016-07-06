@@ -1,8 +1,38 @@
 /* ----------------------------
 
-	Navigation
+	Table of Contents
+	=================
+
+	1. Global Functons
+
+		1.1 Navigation
+		1.2 Display Message Prototype
+		1.3 Loading Animation
+
+	2. Index Controller
+
+	3. Journey Prototype
+
+	4. Form Controller
 	
 ---------------------------- */
+
+
+var app_id = '1e55ad45';
+var app_key = '40c230d6c65288e70be34a738dcc6b91';
+
+
+
+
+/* ----------------------------
+
+	1. Global Functions
+	
+---------------------------- */
+
+
+/* 1.1 NAVIGATION ------------------- */
+
 
 var fab = document.getElementsByClassName('fab')[0];
 var newJourneySection = document.getElementsByClassName('new-journey')[0];
@@ -17,14 +47,7 @@ fab.addEventListener('click', function() {
 });
 
 
-/* ----------------------------
-
-	Global
-	
----------------------------- */
-
-
-/* DISPLAY MESSAGE ------------------- */
+/* 1.2. DISPLAY MESSAGE ------------------- */
 
 function DisplayMessage(type, message) {
 
@@ -69,7 +92,7 @@ DisplayMessage.prototype._init = function(type, message) {
 };
 
 
-/* LOADER ------------------- */
+/* 1.3 LOADING ANIMATION ------------------- */
 
 function Loader(element) {
 	this._target = element;
@@ -77,7 +100,7 @@ function Loader(element) {
 	this._loader = document.createElement('div');
 	this._loader.classList.add('spinner');
 	this._loader.innerHTML = '<div class="double-bounce1"></div>\
-							  <div class="double-bounce2"></div>';
+							<div class="double-bounce2"></div>';
 
 	this._init();
 }
@@ -90,67 +113,75 @@ Loader.prototype.remove = function() {
 };
 
 
+
+
+
 /* ----------------------------
 
-	IndexController
+	2. IndexController
 	
 ---------------------------- */
 
 function IndexController() {
 
 	this._dbPromise = this._setupDB();
-	//this._registerServiceWorker();
+	this._registerServiceWorker();
 	this.showDefaultJourney();
 
 }
 
 
 IndexController.prototype._setupDB = function() {
-
-	if (!navigator.serviceWorker) {
-		return Promise.resolve();
-	}
+	if (!navigator.serviceWorker) { return Promise.resolve(); }
 
 	return dbPromise = idb.open('tplanr', 1, function(upgradeDb) {
 		var store = upgradeDb.createObjectStore('journeys', {
 			keyPath: 'departure_time'
 		});
 	});
-
 };
 
 IndexController.prototype._registerServiceWorker = function() {
-	if ('serviceWorker' in navigator) {
 
-		navigator.serviceWorker
-		.register('./service-worker.js', { scope: './' })
-		.then(function(reg) {
-			// console.log('Service Worker Registered', reg);
+	if ( !('serviceWorker' in navigator) ) {
 
-			if (reg.waiting) {
-				console.log('reg waiting');
+		new DisplayMessage('success', "Your browser doesn't support all the cool features this application offers (like offline capabilities). Why not try using this app in Chrome?")
+			.setupAction('Get Chrome', function() {
+				window.open('https://www.google.com/chrome/browser/mobile/index.html');
+			});
 
-				new DisplayMessage('success', "There's a new verion of TubePlanr available! Click refresh to update")
-				.setupAction('Refresh', function() {
-					reg.waiting.postMessage({ action: 'skipWaiting' });
-				});
-
-				return;
-			}
+		return;
+	}
 
 
-		})
-		.catch(function(err) {
-			console.log('Service Worker Failed to Register', err);
-		});
+
+	navigator.serviceWorker
+	.register('./service-worker.js', { scope: './' })
+	.then(function(reg) {
+		console.log('Service Worker Registered', reg);
+
+		if (reg.waiting) {
+			console.log('reg waiting');
+
+			new DisplayMessage('success', "There's a new verion of TubePlanr available! Click refresh to update")
+			.setupAction('Refresh', function() {
+				reg.waiting.postMessage({ action: 'skipWaiting' });
+			});
+
+			return;
+		}
+
+	})
+	.catch(function(err) {
+		console.log('Service Worker Failed to Register', err);
+	});
 
 
-		navigator.serviceWorker.addEventListener('controllerchange', function() {
-			window.location.reload();
-		});
+	navigator.serviceWorker.addEventListener('controllerchange', function() {
+		window.location.reload();
+	});
 
 
-	} // end if serviceWorker
 };
 
 
@@ -175,12 +206,16 @@ IndexController.prototype.showDefaultJourney = function() {
 			prototype._handleEmptyState();
 			return Promise.reject();
 		} else {
+
+			/* create new journey from database results */
 			new Journey(null, response[0]);
 			return Promise.resolve(response[0]);
 		}
 		
 
 	}).then(function(lastJourney) {
+
+		/* FETCH UPDATED DATA FOR LAST JOURNEY */
 
 		var lastJourneyDeparturePoint = lastJourney.journeys[0].legs[0].departurePoint;
 		var lastJourneyArrivalPoint = lastJourney.journeys[0].legs[ lastJourney.journeys[0].legs.length - 1 ].arrivalPoint;
@@ -192,18 +227,14 @@ IndexController.prototype.showDefaultJourney = function() {
 			toName: lastJourney.arrival_location
 		};
 
-		// IRE!! NEED TO UNCOMMENT
-		//new Journey(fetchInformation, null, true);
+		new Journey(fetchInformation, null, true);
 
 	});
 };
 
 
 
-
-
-
-var Controller = new IndexController;
+var Controller = new IndexController();
 
 
 
@@ -212,27 +243,16 @@ var Controller = new IndexController;
 
 /* ----------------------------
 
-	
-	
----------------------------- */
-
-
-var app_id = '1e55ad45';
-var app_key = '40c230d6c65288e70be34a738dcc6b91';
-
-
-/* ----------------------------
-
-	Journey Prototype
+	3. Journey Prototype
 	
 ---------------------------- */
 
 
-function Journey(newJourney, savedJourney, hideLoader) {
+function Journey(newJourney, savedJourney, shouldHideLoader) {
 
 	this._savedJourney = false;
 
-	this._hideLoader = hideLoader;
+	this._shouldHideLoader = shouldHideLoader;
 
 	if ( savedJourney ) {
 
@@ -307,7 +327,6 @@ Journey.prototype._fetchData = function() {
 	return fetch(this._fetchUrl).then(function(response) {
 		return response.json();
 	}).catch(function(err) {
-		console.log("fetch caught in _fetchdata", err);
 		return Promise.reject(err);
 	});
 };
@@ -339,11 +358,12 @@ Journey.prototype._addToDB = function(data, prototype) {
 			var store = tx.objectStore('journeys');
 			store.put(data);
 			return tx.complete;
-		}).then(function() {
-			console.log('Added to db');
-		}).catch(function(err) {
-			console.log('Error adding to db', err);
 		});
+		// .then(function() {
+		// 	console.log('Added to db');
+		// }).catch(function(err) {
+		// 	console.log('Error adding to db', err);
+		// });
 
 	});
 	
@@ -367,7 +387,7 @@ Journey.prototype._init = function() {
 
 	} else {
 
-		if ( !this._hideLoader ) {
+		if ( !this._shouldHideLoader ) {
 			new Loader( document.getElementById('journeys') );
 		}
 
@@ -378,13 +398,11 @@ Journey.prototype._init = function() {
 			return prototype._addToDB(data, prototype);
 		})
 		.catch(function(err) {
-			console.log("caught error from Journey.prototype._init", err);
 			new DisplayMessage('danger', 'Oops! Looks like we were unable to get your new route. Here is your last searched journey instead').setupAction(false);
 			Controller.showDefaultJourney();
 		});
 
 	}
-	
 
 };
 
@@ -398,7 +416,7 @@ Journey.prototype._init = function() {
 
 /* ----------------------------
 
-	NEW JOURNEY FORM
+	4. Form Controller
 	
 ---------------------------- */
 
@@ -415,7 +433,7 @@ FormController.prototype._setupForm = function() {
 
 	var prototype = this;
 
-	fetch('/assets/data/stations.json')
+	fetch('./assets/data/stations.json')
 	.then(function(response) {
 		return response.json();
 	})
@@ -483,6 +501,7 @@ FormController.prototype._getGeolocation = function(e) {
 	if ( e !== 'geolocation' ) { return; }
 
 	if ( !('geolocation' in navigator) ) {
+		document.querySelector('.selectize-dropdown-content div[data-value="geolocation"]').style.display = 'none';
 		new DisplayMessage('danger', "We can't get your current position because your browser doesn't support this feature :(").setupAction(false);
 		return;
 	}
@@ -499,16 +518,13 @@ FormController.prototype._getGeolocation = function(e) {
 			geolocationSelectizeInput.innerHTML = 'Using current location';
 			document.querySelector('#location_from option[selected]').value = position.coords.latitude + ',' + position.coords.longitude;
 
-
 		} else {
 
 			geolocationSelectizeInput.innerHTML = 'Location invalid';
 			document.querySelector('.selectize-dropdown-content div[data-value="geolocation"]').style.display = 'none';
 			new DisplayMessage('danger', "Looks like you are outside London! Try searching for a station instead of using your location").setupAction(false);
-
 		}
 
-		
 
 	}, function(err) {
 
@@ -517,10 +533,7 @@ FormController.prototype._getGeolocation = function(e) {
 
 	});
 
-
 };
-
-
 
 
 FormController.prototype._handleSubmit = function(e) {
@@ -556,24 +569,6 @@ FormController.prototype._handleSubmit = function(e) {
 
 var newJourneyForm = document.getElementById('new-journey-form');
 var newJourneyProtype = new FormController( newJourneyForm );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

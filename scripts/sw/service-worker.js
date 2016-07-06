@@ -10,22 +10,22 @@ var currentCacheName = appPrefix+'static-v0';
 self.addEventListener('install', function(event) {
  
 	var filesToCache = [
-		'/',
-		'/index.html',
+		'./',
+		'./index.html',
 
-		'/assets/js/lib/jquery.min.js',
-		'/assets/js/lib/moment.min.js',
-		'/assets/js/lib/handlebars.min.js',
-		'/assets/js/lib/selectize.min.js',
-		'/assets/js/lib/idb.min.js',
+		'./assets/js/lib/jquery.min.js',
+		'./assets/js/lib/moment.min.js',
+		'./assets/js/lib/handlebars.min.js',
+		'./assets/js/lib/selectize.min.js',
+		'./assets/js/lib/idb.min.js',
 
-		'/assets/js/main.js',
-		'/assets/js/handlebars-helpers.js',
-		'/assets/js/templates.js',
+		'./assets/js/main.js',
+		'./assets/js/handlebars-helpers.js',
+		'./assets/js/templates.js',
 
-		'/assets/data/stations.json',
+		'./assets/data/stations.json',
 
-		'/assets/css/main.css'
+		'./assets/css/main.css'
 	];
 
 	event.waitUntil(
