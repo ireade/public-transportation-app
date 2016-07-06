@@ -45,3 +45,12 @@ Handlebars.registerHelper('datetime', function (value, options) {
   
 	return m;
 });
+
+
+
+/* PRETTY DATETIME USING MOMENT.JS */
+Handlebars.registerHelper('escape_html', function (value, options) {
+
+	return value;
+
+});

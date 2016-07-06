@@ -41,7 +41,7 @@ DisplayMessage.prototype._toggle = function() {
 };
 
 DisplayMessage.prototype._reset = function() {
-	this.displayMessageEl.classList.remove('success', 'danger');
+	this.displayMessageEl.classList.remove('success', 'danger', 'open');
 	this.messageEl.innerHTML = '';
 	this.actionBTN.style.display = '';
 };
@@ -99,8 +99,9 @@ Loader.prototype.remove = function() {
 function IndexController() {
 
 	this._dbPromise = this._setupDB();
-	this._registerServiceWorker();
+	//this._registerServiceWorker();
 	this.showDefaultJourney();
+
 }
 
 
@@ -198,6 +199,10 @@ IndexController.prototype.showDefaultJourney = function() {
 };
 
 
+
+
+
+
 var Controller = new IndexController;
 
 
@@ -279,6 +284,16 @@ Journey.prototype._setupData = function(result) {
 
 			if ( j == (journey.legs.length - 1) ) {
 				data.journeys[i].arrival_location = leg.arrivalPoint.commonName;
+			}
+
+			if ( leg.mode.id === 'tube' ) {
+
+				data.journeys[i].legs[j].instruction.custom = 'Take the <span class="instruction__line">'+leg.routeOptions[0].name+' Line</span> (in the direction of <span class="instruction__direction">'+leg.routeOptions[0].directions[0]+'</span>) and get off at <span class="instruction__dest">'+leg.arrivalPoint.commonName+'</span>';
+
+			} else if ( leg.mode.id == 'walking' ) {
+
+				data.journeys[i].legs[j].instruction.custom = 'Walk to <span class="instruction__dest">'+leg.arrivalPoint.commonName+'</span>';
+
 			}
 
 		} // end loop through journey legs
@@ -378,39 +393,6 @@ Journey.prototype._init = function() {
 
 
 
-/* ----------------------------
-
-	Setup stations dropdown
-	
----------------------------- */
-
-
-fetch('/assets/data/stations.json')
-.then(function(response) {
-	return response.json();
-})
-.then(function(json) {
-	var data = { stations: json };
-	var html = MyApp.templates.stations(data);
-	document.getElementById('location_from').innerHTML = html;
-	document.getElementById('location_to').innerHTML = html;
-
-	return Promise.resolve();
-	
-})
-.then(function() {
-
-	var options = {
-		sortField: {
-			field: 'text',
-			direction: 'asc'
-		}
-	};
-
-	$('#location_from').selectize(options);
-	$('#location_to').selectize(options);
-});
-
 
 
 
@@ -420,9 +402,128 @@ fetch('/assets/data/stations.json')
 	
 ---------------------------- */
 
-var newJourneyForm = document.getElementById('new-journey-form');
+function FormController(form) {
 
-newJourneyForm.addEventListener('submit', function(e) {
+	this._form = form;
+
+	this._setupForm();
+	this._form.addEventListener('submit', this._handleSubmit);
+}
+
+
+FormController.prototype._setupForm = function() {
+
+	var prototype = this;
+
+	fetch('/assets/data/stations.json')
+	.then(function(response) {
+		return response.json();
+	})
+	.then(function(json) {
+
+		var data = { stations: json };
+		var html = MyApp.templates.stations(data);
+
+		var placeholder_option = '<option value="">Search for a station...</option>';
+		var geolocation_option = '<option value="geolocation">* Use current location</option>';
+
+		document.getElementById('location_from').innerHTML = placeholder_option + geolocation_option + html;
+		document.getElementById('location_to').innerHTML = placeholder_option + html;
+
+		return Promise.resolve();
+		
+	})
+	.then(function() {
+
+		$('#location_from').selectize({
+			sortField: {
+				field: 'text',
+				direction: 'asc'
+			},
+			onChange: prototype._getGeolocation
+		});
+
+		$('#location_to').selectize({
+			sortField: {
+				field: 'text',
+				direction: 'asc'
+			}
+		});
+	});
+
+};
+
+
+
+FormController.prototype._validateGeolocation = function(position) {
+
+	var lat = position.coords.latitude;
+	var lon = position.coords.longitude;
+
+	var boundary_top_left = [51.703462, -0.461611]; var boundary_top_right = [51.706866, 0.274473];   
+
+	var boundary_bottom_left = [51.397752, -0.419039]; var boundary_bottom_right = [51.383184, 0.156370];
+
+
+
+	var lat_is_within = ( lat < boundary_top_left[0] && lat > boundary_bottom_left[0]) &&
+						( lat < boundary_top_right[0] && lat > boundary_top_right[0]);
+
+
+	var lon_is_within = ( lon > boundary_top_left[1] && lon < boundary_top_right[1]) &&
+						( lon < boundary_bottom_left[1] && lon > boundary_bottom_right[1]);
+	
+	
+	return lat_is_within && lon_is_within;
+
+};
+
+FormController.prototype._getGeolocation = function(e) {
+
+	if ( e !== 'geolocation' ) { return; }
+
+	if ( !('geolocation' in navigator) ) {
+		new DisplayMessage('danger', "We can't get your current position because your browser doesn't support this feature :(").setupAction(false);
+		return;
+	}
+
+	var geolocationSelectizeInput = document.querySelector('.selectize-input .item[data-value="geolocation"]');
+	geolocationSelectizeInput.innerHTML = 'Fetching yout current location...';
+
+
+
+	navigator.geolocation.getCurrentPosition(function(position) {
+
+		if ( newJourneyProtype._validateGeolocation(position) ) {
+
+			geolocationSelectizeInput.innerHTML = 'Using current location';
+			document.querySelector('#location_from option[selected]').value = position.coords.latitude + ',' + position.coords.longitude;
+
+
+		} else {
+
+			geolocationSelectizeInput.innerHTML = 'Location invalid';
+			document.querySelector('.selectize-dropdown-content div[data-value="geolocation"]').style.display = 'none';
+			new DisplayMessage('danger', "Looks like you are outside London! Try searching for a station instead of using your location").setupAction(false);
+
+		}
+
+		
+
+	}, function(err) {
+
+		geolocationSelectizeInput.innerHTML = 'Location not found';
+		new DisplayMessage('danger', "There was a problem getting your current location. Try again or select a train station").setupAction(false);
+
+	});
+
+
+};
+
+
+
+
+FormController.prototype._handleSubmit = function(e) {
 
 	e.preventDefault();
 
@@ -448,10 +549,14 @@ newJourneyForm.addEventListener('submit', function(e) {
 	};
 
 	new Journey(fetchInformation);
-
 	toggleModal();
+	
+};
 
-});
+
+var newJourneyForm = document.getElementById('new-journey-form');
+var newJourneyProtype = new FormController( newJourneyForm );
+
 
 
 

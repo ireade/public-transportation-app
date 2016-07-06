@@ -1,5 +1,5 @@
 <h3>
-	Your Journey from <mark>{{departure_location}}</mark> to <mark>{{arrival_location}}</mark><br>
+	From <mark>{{departure_location}}</mark> to <mark>{{arrival_location}}</mark><br>
 	Leaving <mark>{{datetime departure_time}}</mark>
 </h3>
 
@@ -34,7 +34,13 @@
 			{{#each legs}}
 			<li>
 				<span class="step__time">{{time departureTime}} - {{time arrivalTime}}</span>
-				<p>{{instruction.summary}}</p>
+				<p class="step__instruction">
+					{{#if instruction.custom}}
+						{{{escape_html instruction.custom}}}
+					{{else}}
+						{{instruction.summary}}
+					{{/if}}
+				</p>
 			</li>
 			{{/each}}
 		</ul>

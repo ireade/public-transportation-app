@@ -28,23 +28,34 @@
 	border-radius: 5px;
 	background-color: #fff;
 
-	
+}
 
-	.journey__steps {
-		display: flex;
-		flex-wrap: wrap;
+.journey__steps {
+	display: flex;
+	flex-wrap: wrap;
 
-		.step__time {
-			font-weight: 700;
-		}
+	.step__time {
+		font-weight: 700;
+	}
 
-		li {
-			width: 100%;
-			padding: 10px;
+	.step__instruction {
+		
+
+		.instruction__line,
+		.instruction__dest {
+			border-bottom: 2px solid $primary-clr;
 		}
-		li:not(:last-child) {
-			border-bottom: 1px solid $primary-clr;
+		.instruction__direction {
+			
 		}
+	}
+
+	li {
+		width: 100%;
+		padding: 10px;
+	}
+	li:not(:last-child) {
+		border-bottom: 1px solid $primary-clr;
 	}
 }
 

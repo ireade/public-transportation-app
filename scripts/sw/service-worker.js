@@ -1,5 +1,5 @@
 var appPrefix = 'tplanr-';
-var currentCacheName = appPrefix+'testing-v3';
+var currentCacheName = appPrefix+'static-v0';
 
 /* ------------------------------
 

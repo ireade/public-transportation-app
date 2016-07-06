@@ -29,13 +29,25 @@ this["MyApp"]["templates"]["journeys"] = Handlebars.template({"1":function(depth
     + alias2((helpers.time || (depth0 && depth0.time) || alias1).call(depth0,(depth0 != null ? depth0.departureTime : depth0),{"name":"time","hash":{},"data":data}))
     + " - "
     + alias2((helpers.time || (depth0 && depth0.time) || alias1).call(depth0,(depth0 != null ? depth0.arrivalTime : depth0),{"name":"time","hash":{},"data":data}))
-    + "</span>\n				<p>"
-    + alias2(this.lambda(((stack1 = (depth0 != null ? depth0.instruction : depth0)) != null ? stack1.summary : stack1), depth0))
-    + "</p>\n			</li>\n";
+    + "</span>\n				<p class=\"step__instruction\">\n"
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.instruction : depth0)) != null ? stack1.custom : stack1),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.program(7, data, 0),"data":data})) != null ? stack1 : "")
+    + "				</p>\n			</li>\n";
+},"5":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "						"
+    + ((stack1 = (helpers.escape_html || (depth0 && depth0.escape_html) || helpers.helperMissing).call(depth0,((stack1 = (depth0 != null ? depth0.instruction : depth0)) != null ? stack1.custom : stack1),{"name":"escape_html","hash":{},"data":data})) != null ? stack1 : "")
+    + "\n";
+},"7":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "						"
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.instruction : depth0)) != null ? stack1.summary : stack1), depth0))
+    + "\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<h3>\n	Your Journey from <mark>"
+  return "<h3>\n	From <mark>"
     + alias3(((helper = (helper = helpers.departure_location || (depth0 != null ? depth0.departure_location : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"departure_location","hash":{},"data":data}) : helper)))
     + "</mark> to <mark>"
     + alias3(((helper = (helper = helpers.arrival_location || (depth0 != null ? depth0.arrival_location : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"arrival_location","hash":{},"data":data}) : helper)))
@@ -57,6 +69,5 @@ this["MyApp"]["templates"]["stations"] = Handlebars.template({"1":function(depth
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "<option value=\"\">Search for a station...</option>\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.stations : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.stations : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});

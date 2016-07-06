@@ -21,3 +21,5 @@ Bonus Points -
 ## The Tube Planr
 
 For this project I created [The Tube Planr](https://tplanr.ire.codes). I used Transport for London's API to handle the transport.
+
+git subtree push --prefix dist origin gh-pages

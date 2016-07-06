@@ -321,3 +321,13 @@
   opacity: 0.5;
   background-color: #fafafa;
 }
+
+
+/* CUSTOM */
+
+.selectize-dropdown-content div[data-value="geolocation"] {
+  background-color: $primary-clr;
+}
+
+
+

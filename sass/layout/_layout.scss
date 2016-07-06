@@ -81,6 +81,8 @@
 	transition: top 0.5s;
 	background: $bg-clr;
 
+	overflow-y: scroll;
+
 	z-index: 100;
 }
 
