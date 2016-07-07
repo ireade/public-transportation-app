@@ -19,8 +19,8 @@ var postcssProcessors = [
 	} )
 ];
 
-var sassMainFile = 'sass/main.scss';
-var sassFiles = 'sass/**/*.scss';
+var sassMainFile = 'src/sass/main.scss';
+var sassFiles = 'src/sass/**/*.scss';
 
 gulp.task('css', function() {
 	gulp.src(sassMainFile)
@@ -42,10 +42,10 @@ gulp.task('css', function() {
 	JS
 ************* */
 var uglify = require('gulp-uglify');
-var jsFiles = 'scripts/**/*.js';
+var jsFiles = 'src/scripts/**/*.js';
 
-var jsMainFiles = 'scripts/main/*.js';
-var jsSWFile = 'scripts/sw/service-worker.js';
+var jsMainFiles = 'src/scripts/main/*.js';
+var jsSWFile = 'src/scripts/sw/service-worker.js';
 
 
 gulp.task('js', function() {
@@ -67,7 +67,7 @@ gulp.task('js', function() {
 var fileinclude = require('gulp-file-include');
 
 gulp.task('fileinclude', function() {
-  gulp.src(['views/index.html'])
+  gulp.src(['src/views/index.html'])
     .pipe(fileinclude({
       prefix: '@@',
       basepath: '@file'
@@ -82,7 +82,7 @@ var declare = require('gulp-declare');
 var concat = require('gulp-concat');
 
 gulp.task('templates', function () {
-    gulp.src('views/templates/*.hbs')
+    gulp.src('src/views/templates/*.hbs')
       .pipe(handlebars())
       .pipe(wrap('Handlebars.template(<%= contents %>)'))
       .pipe(declare({
@@ -119,7 +119,7 @@ gulp.task('connectWithBrowserSync', function() {
 gulp.task('watch', function() {
 	gulp.watch(sassFiles,['css']).on('change', browserSync.reload); 
 	gulp.watch(jsFiles,['js']).on('change', browserSync.reload);
-	gulp.watch(['views/*.html', 'views/templates/*.hbs'], ['fileinclude', 'templates']).on('change', browserSync.reload);
+	gulp.watch(['src/views/*.html', 'src/views/templates/*.hbs'], ['fileinclude', 'templates']).on('change', browserSync.reload);
 });
 
 

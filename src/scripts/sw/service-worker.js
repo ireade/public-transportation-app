@@ -1,5 +1,5 @@
 var appPrefix = 'tplanr-';
-var currentCacheName = appPrefix+'static-v1';
+var currentCacheName = appPrefix+'static-v5';
 
 /* ------------------------------
 
@@ -18,6 +18,7 @@ self.addEventListener('install', function(event) {
 		'./assets/js/lib/handlebars.min.js',
 		'./assets/js/lib/selectize.min.js',
 		'./assets/js/lib/idb.min.js',
+		'./assets/js/lib/polyfill.min.js',
 
 		'./assets/js/main.js',
 		'./assets/js/handlebars-helpers.js',

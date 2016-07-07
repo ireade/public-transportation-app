@@ -138,6 +138,7 @@ IndexController.prototype._setupDB = function() {
 		var store = upgradeDb.createObjectStore('journeys', {
 			keyPath: 'departure_time'
 		});
+		store.createIndex('coordinates', 'coordinates');
 	});
 };
 
@@ -154,14 +155,12 @@ IndexController.prototype._registerServiceWorker = function() {
 	}
 
 
-
 	navigator.serviceWorker
 	.register('./service-worker.js', { scope: './' })
 	.then(function(reg) {
-		console.log('Service Worker Registered', reg);
+		//console.log('Service Worker Registered', reg);
 
 		if (reg.waiting) {
-			console.log('reg waiting');
 
 			new DisplayMessage('success', "There's a new verion of TubePlanr available! Click refresh to update")
 			.setupAction('Refresh', function() {
@@ -176,15 +175,11 @@ IndexController.prototype._registerServiceWorker = function() {
 		console.log('Service Worker Failed to Register', err);
 	});
 
-
 	navigator.serviceWorker.addEventListener('controllerchange', function() {
 		window.location.reload();
 	});
 
-
 };
-
-
 
 IndexController.prototype._handleEmptyState = function() {
 	toggleModal();
@@ -207,27 +202,9 @@ IndexController.prototype.showDefaultJourney = function() {
 			return Promise.reject();
 		} else {
 
-			/* create new journey from database results */
-			new Journey(null, response[0]);
-			return Promise.resolve(response[0]);
+			// RETURN THE LAST ITEM IN THE DATABASE
+			new Journey(null, response[ response.length - 1 ]);
 		}
-		
-
-	}).then(function(lastJourney) {
-
-		/* FETCH UPDATED DATA FOR LAST JOURNEY */
-
-		var lastJourneyDeparturePoint = lastJourney.journeys[0].legs[0].departurePoint;
-		var lastJourneyArrivalPoint = lastJourney.journeys[0].legs[ lastJourney.journeys[0].legs.length - 1 ].arrivalPoint;
-
-		var fetchInformation = {
-			fromCoordinates: lastJourneyDeparturePoint.lat +','+ lastJourneyDeparturePoint.lon,
-			toCoordinates: lastJourneyArrivalPoint.lat +','+ lastJourneyArrivalPoint.lon,
-			fromName: lastJourney.departure_location,
-			toName: lastJourney.arrival_location
-		};
-
-		new Journey(fetchInformation, null, true);
 
 	});
 };
@@ -248,11 +225,10 @@ var Controller = new IndexController();
 ---------------------------- */
 
 
-function Journey(newJourney, savedJourney, shouldHideLoader) {
+function Journey(newJourney, savedJourney) {
 
 	this._savedJourney = false;
 
-	this._shouldHideLoader = shouldHideLoader;
 
 	if ( savedJourney ) {
 
@@ -273,9 +249,10 @@ function Journey(newJourney, savedJourney, shouldHideLoader) {
 
 }
 
-Journey.prototype._setupData = function(result) {
+Journey.prototype._setupData = function(result, prototype) {
 
 	var data = {
+		coordinates: prototype._fromCoordinates + ' - ' + prototype._toCoordinates,
 		departure_location: result.journeys[0].legs[0].departurePoint.commonName,
 		arrival_location: result.journeys[0].legs[ result.journeys[0].legs.length - 1 ].arrivalPoint.commonName,
 		departure_time: result.journeys[0].startDateTime,
@@ -332,15 +309,20 @@ Journey.prototype._fetchData = function() {
 };
 
 
-Journey.prototype._clearDB = function() {
+Journey.prototype._clearDB = function(data) {
+
+	var thisCoordinates = data.coordinates;
 
 	return Controller._dbPromise.then(function(db) {
 		var tx = db.transaction('journeys', 'readwrite');
 		var store = tx.objectStore('journeys');
-		return store.openCursor();
+		var coordinatesIndex = store.index('coordinates');
+		return coordinatesIndex.openCursor();
 	}).then(function deleteCursor(cursor) {
 		if (!cursor) return;
-		cursor.delete();
+		if ( cursor.value.coordinates === thisCoordinates ) {
+			cursor.delete();
+		}		
 		return cursor.continue().then(deleteCursor);
 	}).then(function() {
 		return Promise.resolve();
@@ -351,23 +333,21 @@ Journey.prototype._clearDB = function() {
 
 Journey.prototype._addToDB = function(data, prototype) {
 
-	return prototype._clearDB().then(function() {
+	return prototype._clearDB(data).then(function() {
 
 		return Controller._dbPromise.then(function(db) {
 			var tx = db.transaction('journeys', 'readwrite');
 			var store = tx.objectStore('journeys');
 			store.put(data);
 			return tx.complete;
+		}).then(function() {
+			// console.log("added");
 		});
-		// .then(function() {
-		// 	console.log('Added to db');
-		// }).catch(function(err) {
-		// 	console.log('Error adding to db', err);
-		// });
 
 	});
 	
 };
+
 
 
 Journey.prototype._displayJourney = function(data) {
@@ -377,36 +357,102 @@ Journey.prototype._displayJourney = function(data) {
 };
 
 
+
+Journey.prototype._checkJourneyInDB = function(prototype) {
+
+	var thisCoordinates = prototype._fromCoordinates + ' - ' + prototype._toCoordinates;
+
+	return Controller._dbPromise.then(function(db) {
+		var tx = db.transaction('journeys');
+		var store = tx.objectStore('journeys');
+		var coordinatesIndex = store.index('coordinates');
+		return coordinatesIndex.getAll(thisCoordinates);
+	});
+};
+
+
+
+Journey.prototype._updateInBackground = function(data, prototype) {
+
+	var lastJourneyDeparturePoint = data.journeys[0].legs[0].departurePoint;
+	var lastJourneyArrivalPoint = data.journeys[0].legs[ data.journeys[0].legs.length - 1 ].arrivalPoint;
+
+	var fetchInformation = {
+		fromCoordinates: lastJourneyDeparturePoint.lat +','+ lastJourneyDeparturePoint.lon,
+		toCoordinates: lastJourneyArrivalPoint.lat +','+ lastJourneyArrivalPoint.lon,
+		fromName: data.departure_location,
+		toName: data.arrival_location
+	};
+
+	prototype._fromCoordinates = fetchInformation.fromCoordinates;
+	prototype._toCoordinates = fetchInformation.toCoordinates;
+	prototype._fromName = fetchInformation.fromName ? '&fromName='+fetchInformation.fromName : '';
+	prototype._toName = fetchInformation.toName ? '&toName='+fetchInformation.toName : '';
+
+	prototype._fetchUrl = 'https://api.tfl.gov.uk/Journey/JourneyResults/'+prototype._fromCoordinates+'/to/'+prototype._toCoordinates+'?nationalSearch=True&timeIs=Departing&journeyPreference=LeastTime&mode=tube&walkingSpeed=Average&cyclePreference=None&alternativeCycle=False&alternativeWalking=False&applyHtmlMarkup=False&useMultiModalCall=False&walkingOptimization=False'+prototype._fromName+prototype._toName+'&app_id='+app_id+'&app_key='+app_key;
+
+	prototype._fetchAndDisplpayJourney(prototype, true);
+
+};
+
+
+
+Journey.prototype._fetchAndDisplpayJourney = function(prototype, hideLoader) {
+
+	if ( !hideLoader ) {
+		new Loader( document.getElementById('journeys') );
+	}
+
+	prototype._fetchData()
+	.then(function(data) {
+		return prototype._setupData(data, prototype);
+	})
+	.then(prototype._displayJourney)
+	.catch(function(err) {
+
+		if ( !hideLoader ) {
+			new DisplayMessage('danger', 'Oops! Looks like we were unable to get your new route. Here is your last searched journey instead').setupAction(false);
+			Controller.showDefaultJourney();
+		}
+
+		return Promise.reject();
+	})
+	.then(function(data) {
+		return prototype._addToDB(data, prototype);
+	});
+
+};
+
+
 Journey.prototype._init = function() {
 
 	var prototype = this;
 
 	if ( this._savedJourney ) {
 
-		prototype._displayJourney(this._savedJourney);
+		prototype._displayJourney(this._savedJourney)
+		.then(function(data) {
+			return prototype._updateInBackground(data, prototype);
+		});
+		return;
+	}
 
-	} else {
+	prototype._checkJourneyInDB(prototype)
+	.then(function(response) {
 
-		if ( !this._shouldHideLoader ) {
-			new Loader( document.getElementById('journeys') );
+		if ( response.length > 0 ) {
+
+			prototype._displayJourney(response[0])
+			.then(function(data) {
+				return prototype._updateInBackground(data, prototype);
+			});
+
+		} else {
+			prototype._fetchAndDisplpayJourney(prototype);
 		}
 
-		this._fetchData()
-		.then(prototype._setupData)
-		.then(prototype._displayJourney)
-		.catch(function(err) {
+	});
 
-			if ( !this._shouldHideLoader ) {
-				new DisplayMessage('danger', 'Oops! Looks like we were unable to get your new route. Here is your last searched journey instead').setupAction(false);
-				Controller.showDefaultJourney();
-			}
-			
-		})
-		.then(function(data) {
-			return prototype._addToDB(data, prototype);
-		});
-
-	}
 
 };
 
@@ -510,7 +556,7 @@ FormController.prototype._getGeolocation = function(e) {
 	}
 
 	var geolocationSelectizeInput = document.querySelector('.selectize-input .item[data-value="geolocation"]');
-	geolocationSelectizeInput.innerHTML = 'Fetching yout current location...';
+	geolocationSelectizeInput.innerHTML = 'Fetching yout current location... (please hold on)';
 
 
 
