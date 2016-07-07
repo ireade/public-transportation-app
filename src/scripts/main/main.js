@@ -134,11 +134,17 @@ function IndexController() {
 IndexController.prototype._setupDB = function() {
 	if (!navigator.serviceWorker) { return Promise.resolve(); }
 
-	return dbPromise = idb.open('tplanr', 1, function(upgradeDb) {
-		var store = upgradeDb.createObjectStore('journeys', {
-			keyPath: 'departure_time'
-		});
-		store.createIndex('coordinates', 'coordinates');
+	return idb.open('tplanr', 2, function(upgradeDb) {
+		switch(upgradeDb.oldVersion) {
+			case 0:
+				var store = upgradeDb.createObjectStore('journeys', {
+					keyPath: 'departure_time'
+				});
+			case 1:
+				var store = upgradeDb.transaction.objectStore('journeys');
+				store.createIndex('coordinates', 'coordinates');
+
+		}
 	});
 };
 
